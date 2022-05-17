@@ -1,0 +1,274 @@
+from aiogram import types, Dispatcher
+from create_bot import dp, bot
+from yoda import yoda_func
+from zabbix import zabbix_func
+import re
+import urllib.request
+from variables import TOKEN
+import requests, json
+import datetime
+from excel import excel_func
+from cli import func_cli
+from sql import func_sql
+
+
+async def command_start(message: types.Message):
+    try:
+        await bot.send_message(message.from_user.id, 'Добро пожаловать')
+        await message.delete()
+    except:
+        await message.reply('Общение с ботом через ЛС, напишите ему:\nhttps://t.me/PNR_SEK_bot')
+
+
+async def command_help(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+
+    list_help = []
+    str_help = ''
+
+    with open("help.txt", 'r', encoding='utf8') as f_help:
+        list_help = f_help.readlines()
+    for line_f in list_help:
+        str_help += line_f
+    await message.reply(str_help, parse_mode="MarkdownV2")
+
+
+async def yoda_mac(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    number = message.text[5:]
+    number = re.split(r"[-;,.\s]\s*", number)
+    number_filter = list(filter(None, number))
+    search = 'number'  # number, mac
+    view = 'mobile-stolbi'  # _minimal, mobile-stolbi
+    file_mane = await yoda_func.id_meter_meter_type(number_filter, search, view)
+    await message.reply_document(open(file_mane, 'rb'))
+
+
+async def yoda_mac_src(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    number = message.text[7:]
+    number = re.split(r"[-;,.\s]\s*", number)
+    number_filter = list(filter(None, number))
+    search = 'number'  # number, mac
+    view = 'mobile-stolbi'  # _minimal, mobile-stolbi
+    # file_mane = yoda_func.id_meter_meter_type(number_filter, search, view)
+    output_source = await yoda_func.id_meter_meter_type_src(number_filter, search, view)
+    await message.reply(output_source)
+
+
+async def yoda_mac_short_src(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    number = message.text[6:]
+    number = re.split(r"[-;,.\s]\s*", number)
+    number_filter = list(filter(None, number))
+    search = 'number'  # number, mac
+    view = 'mobile-stolbi'  # _minimal, mobile-stolbi
+    # file_mane = yoda_func.id_meter_meter_type(number_filter, search, view)
+    output_source = await yoda_func.id_meter_short_src(number_filter, search, view)
+    await message.reply(output_source)
+
+
+async def yoda_num(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    number = message.text[5:]
+    number = re.split(r"[-;,.\s]\s*", number)
+    number_filter = list(filter(None, number))
+    search = 'mac'  # number, mac
+    view = 'mobile-stolbi'  # _minimal, mobile-stolbi
+    # file_mane = yoda_func.id_meter_meter_type(number_filter, search, view)
+    await message.reply_document(open(await yoda_func.id_meter_meter_type(number_filter, search, view), 'rb'))
+
+
+async def yoda_num_src(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    number = message.text[7:]
+    number = re.split(r"[-;,.\s]\s*", number)
+    number_filter = list(filter(None, number))
+    search = 'mac'  # number, mac
+    view = 'mobile-stolbi'  # _minimal, mobile-stolbi
+    # output_source = yoda_func.id_meter_meter_type_src(number_filter, search, view)
+    await message.reply(await yoda_func.id_meter_meter_type_src(number_filter, search, view))
+
+
+async def yoda_num_short_src(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    number = message.text[6:]
+    number = re.split(r"[-;,.\s]\s*", number)
+    number_filter = list(filter(None, number))
+    search = 'mac'  # number, mac
+    view = 'mobile-stolbi'  # _minimal, mobile-stolbi
+    # output_source = yoda_func.id_meter_short_src(number_filter, search, view)
+    await message.reply(await yoda_func.id_meter_short_src(number_filter, search, view))
+
+
+async def document_send(message: types.Message):    
+    await message.reply_document(open('file\\test\\Березники - не найденные ПУ.xlsx', 'rb'))    
+
+
+async def zabbix_ip(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    ip = message.text[3:]
+    ip = re.split(r"[-;,\s]\s*", ip)
+    ip_filter = list(filter(None, ip))
+    first_element = ip_filter[0]
+    if first_element.isdigit():
+        query_limit = str(int(ip_filter[0])*len(ip_filter))
+        ip_filter.pop(0)
+    else:
+        query_limit = len(ip_filter)*20
+    file_mane = zabbix_func.get_avg(ip_filter, query_limit)
+    await message.reply_document(open(file_mane, 'rb'))
+
+
+async def zabbix_ip_src(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    ip = message.text[5:]
+    ip = re.split(r"[-;,\s]\s*", ip)
+    ip_filter = list(filter(None, ip))
+    first_element = ip_filter[0]
+    if first_element.isdigit():
+        query_limit = str(int(ip_filter[0])*len(ip_filter))
+        ip_filter.pop(0)
+    else:
+        query_limit = len(ip_filter)*20
+    output_source = zabbix_func.get_avg_src(ip_filter, query_limit)
+    await message.reply(output_source)
+
+
+async def download_file(message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    id = message.document.file_id
+    res = requests.get('https://api.telegram.org/bot{}/getFile?file_id={}'.format(TOKEN, id))
+    b = json.loads(res.text)
+    file_id = b['result']['file_path']
+    name = message.document.file_name
+    now = datetime.datetime.now()
+    now = str(now).replace(':', '_')
+    dir_file = f'./file/input/{now}-{name}'
+    urllib.request.urlretrieve(f'https://api.telegram.org/file/bot{TOKEN}/{file_id}', dir_file)
+    name_file = name.split('_')
+    number_filter = excel_func.open_excel(dir_file)
+    number_filter_in_func = []
+    for meter_line in number_filter:
+        number_filter_in_func.append(str(meter_line[0]))
+    if name_file[0] == 'num':
+        search = 'mac'  # number, mac
+        view = 'mobile-stolbi'  # _minimal, mobile-stolbi
+        file_mane = await yoda_func.id_meter_meter_type(number_filter_in_func, search, view)
+        await message.reply_document(open(file_mane, 'rb'))
+    elif name_file[0] == 'mac':
+        search = 'number'  # number, mac
+        view = 'mobile-stolbi'  # _minimal, mobile-stolbi
+        file_mane = await yoda_func.id_meter_meter_type(number_filter_in_func, search, view)
+        await message.reply_document(open(file_mane, 'rb'))
+    else:
+        await message.reply('файл с некорректным названием')
+
+
+async def change_net_open(message: types.Message):
+
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    status_change = []
+    list_status_change = []
+    ip = message.text[9:]
+    ip = re.split(r"[-;,\s]\s*", ip)
+    ip_filter = list(filter(None, ip))
+    for line in ip_filter:
+        status_change = await func_cli.change_condition_net(line, id_user, get_change='open')
+        list_status_change.append(status_change)
+    StrB = ''
+    for line in list_status_change:
+        StrA = str(line[0]) + ' ' + str(line[1]) + '\n'
+        StrB = StrB + StrA
+    await message.reply(StrB)
+
+
+async def change_net_close(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    status_change = []
+    list_status_change = []
+    ip = message.text[10:]
+    ip = re.split(r"[-;,\s]\s*", ip)
+    ip_filter = list(filter(None, ip))
+    for line in ip_filter:
+        status_change = await func_cli.change_condition_net(line, id_user, get_change='close')
+        list_status_change.append(status_change)
+    StrB = ''
+    for line in list_status_change:
+        StrA = str(line[0]) + ' ' + str(line[1]) + '\n'
+        StrB = StrB + StrA
+    await message.reply(StrB)
+
+
+async def netinfo_in_sql_db(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    list_netinfo = []
+    # list_status_change = []
+    ip = message.text[6:]
+    ip = re.split(r"[-;,\s]\s*", ip)
+    ip_filter = list(filter(None, ip))
+    for line in ip_filter:
+        sqlite_query_host_id = func_sql.select_host_netinfo_all(line)
+        netinfo_host = func_sql.sql_query_select(sqlite_query_host_id)
+        if len(netinfo_host) > 0:
+            list_netinfo.append(netinfo_host[0])
+        else:
+            list_netinfo.append([line, 'Такого IP нет в БД'])
+    StrC = ''
+    count_output = 1
+    for line in list_netinfo:
+        StrB = str(count_output) + ' '
+        for element in line:
+            if element is not None:
+                StrA = str(element) + ' '
+                StrB = StrB + StrA
+        StrC = StrC + StrB + '\n'
+        count_output += 1
+    await message.reply(StrC)
+
+
+
+def register_handler_client(db: Dispatcher):    
+    dp.register_message_handler(command_start, commands=['start'])
+    dp.register_message_handler(command_help, commands=['help'])
+    dp.register_message_handler(yoda_mac, commands=['mac'])
+    dp.register_message_handler(yoda_mac_src, commands=['mac_sa'])
+    dp.register_message_handler(yoda_mac_short_src, commands=['mac_s'])
+    dp.register_message_handler(yoda_num, commands=['num'])
+    dp.register_message_handler(yoda_num_src, commands=['num_sa'])
+    dp.register_message_handler(yoda_num_short_src, commands=['num_s'])
+    dp.register_message_handler(zabbix_ip, commands=['ip'])
+    dp.register_message_handler(zabbix_ip_src, commands=['ip_s'])
+    dp.register_message_handler(document_send, commands=['send'])
+    dp.register_message_handler(download_file, content_types=['document'])
+    dp.register_message_handler(change_net_open, commands=['cli_open'])
+    dp.register_message_handler(change_net_close, commands=['cli_close'])
+    dp.register_message_handler(netinfo_in_sql_db, commands=['ni_db'])
+
+
