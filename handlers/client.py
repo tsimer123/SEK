@@ -10,6 +10,7 @@ import datetime
 from excel import excel_func
 from cli import func_cli
 from sql import func_sql
+from coordinates_math import func_coordinat
 
 
 async def command_start(message: types.Message):
@@ -115,8 +116,10 @@ async def yoda_num_short_src(message: types.Message):
     await message.reply(await yoda_func.id_meter_short_src(number_filter, search, view))
 
 
-async def document_send(message: types.Message):    
-    await message.reply_document(open('file\\test\\Березники - не найденные ПУ.xlsx', 'rb'))    
+async def document_send(message: types.Message):
+    # await message.reply_document(open('bot_iogram\\10.144.57.26.csv', 'rb'))
+    await message.reply_document(open('file\\test\\Березники - не найденные ПУ.xlsx', 'rb'))
+    # await bot.send_message(message.from_user.id, 'ул. Колбасная 15')
 
 
 async def zabbix_ip(message: types.Message):
@@ -253,8 +256,162 @@ async def netinfo_in_sql_db(message: types.Message):
     await message.reply(StrC)
 
 
+async def coordinates_test(message: types.Message):
+    list_meter_values = []
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    meter_values = message.text[8:]
+    meter_values = re.split(r"[-;,\s]\s*", meter_values)
+    meter_values_filter = list(filter(None, meter_values))
+    list_meter_values.append(meter_values_filter)
+    if len(meter_values_filter) == 3:
+        await message.reply_document(open(await func_coordinat.coord_uspd_db_meter_user(list_meter_values), 'rb'))
+    else:
+        await message.reply('Не верный формат записи команды ' + str(meter_values_filter))
 
-def register_handler_client(db: Dispatcher):    
+
+# coorddb_nums вернет все УСПД в радиусе 10км для ПУ из БД
+async def coordinates_number_meters(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    meters = message.text[13:]
+    meters = re.split(r"[;,\s]\s*", meters)
+    meters_filter = list(filter(None, meters))
+
+    if len(meters_filter) > 0:
+        result = await func_coordinat.coord_uspd_db_num_meters_user(meters_filter)
+        if not isinstance(result, list):
+            await message.reply_document(open(result, 'rb'))
+        else:
+            await message.reply(result[0])
+    else:
+        await message.reply('Данные для обработки не введены')
+
+
+# coordBD_num_f - возвращает ближайшую УСПД для списка ПУ в формате файла
+async def coord_one_uspd_db_meter_user_out_file(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    meters = message.text[14:]
+    meters = re.split(r"[;,\s]\s*", meters)
+    meters_filter = list(filter(None, meters))
+
+    if len(meters_filter) > 0:
+        result = await func_coordinat.coord_uspd_db_one_meter_user_file(meters_filter)
+        if not isinstance(result, list):
+            await message.reply_document(open(result, 'rb'))
+        else:
+            await message.reply(result[0])
+    else:
+        await message.reply('Данные для обработки не введены')
+
+
+# coordBD_num_s - возвращает ближайшую УСПД для списка ПУ в формате строке в сообщении
+async def coord_one_uspd_db_meter_user_out_str(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    meters = message.text[14:]
+    meters = re.split(r"[;,\s]\s*", meters)
+    meters_filter = list(filter(None, meters))
+
+    if len(meters_filter) > 0:
+        result = await func_coordinat.coord_uspd_db_one_meter_user_str(meters_filter)
+        if isinstance(result, str):
+            await message.reply(result)
+        else:
+            await message.reply(result[0])
+    else:
+        await message.reply('Данные для обработки не введены')
+
+
+# coord_ll_s - возвращает ближайшую УСПД по координатам пользователя в формате строки в сообщении
+async def coord_one_uspd_db_coord_user_out_str(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    coords = message.text[11:]
+    coords = re.split(r"[;,\s]\s*", coords)
+    coords_filter = list(filter(None, coords))
+
+    if len(coords_filter) > 0:
+        if len(coords_filter) == 2:
+            result = await func_coordinat.coord_uspd_db_coord_user_str(coords_filter)
+            if isinstance(result, str):
+                await message.reply(result)
+            else:
+                await message.reply(result[0])
+        else:
+            await message.reply('Не верный формат записи команды (55.755819 37.617644)')
+    else:
+        await message.reply('Данные для обработки не введены')
+
+
+# coord_ll_f - возвращает ближайшую УСПД по координатам пользователя в формате файла
+async def coord_one_uspd_db_coord_user_out_file(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    coords = message.text[11:]
+    coords = re.split(r"[;,\s]\s*", coords)
+    coords_filter = list(filter(None, coords))
+
+    if len(coords_filter) > 0:
+        if len(coords_filter) == 2:
+            result = await func_coordinat.coord_uspd_db_coord_user_file(coords_filter)
+            if not isinstance(result, list):
+                await message.reply_document(open(result, 'rb'))
+            else:
+                await message.reply(result[0])
+        else:
+            await message.reply('Не верный формат записи команды (55.755819 37.617644)')
+    else:
+        await message.reply('Данные для обработки не введены')
+
+
+# coord_y_num_s - возвращает ближайшую УСПД по координатам из йоды в формате строки в сообщении
+async def coord_uspd_db_meter_yoda_out_str(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    meters = message.text[14:]
+    meters = re.split(r"[;,\s]\s*", meters)
+    meters_filter = list(filter(None, meters))
+
+    if len(meters_filter) > 0:
+        result = await func_coordinat.coord_uspd_db_coord_yoda_str(meters_filter)
+        if isinstance(result, str):
+            await message.reply(result)
+        else:
+            await message.reply(result[0])
+    else:
+        await message.reply('Данные для обработки не введены')
+
+
+# coord_y_num_f - возвращает ближайшую УСПД по координатам из йоды в формате файла
+async def coord_uspd_db_meter_yoda_out_file(message: types.Message):
+    id_user = message.from_user.id
+    full_name = message.from_user.full_name
+    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    meters = message.text[14:]
+    meters = re.split(r"[;,\s]\s*", meters)
+    meters_filter = list(filter(None, meters))
+
+    if len(meters_filter) > 0:
+        result = await func_coordinat.coord_uspd_db_coord_yoda_file(meters_filter)
+        if not isinstance(result, list):
+            await message.reply_document(open(result, 'rb'))
+        else:
+            await message.reply(result[0])
+    else:
+        await message.reply('Данные для обработки не введены')
+
+
+def register_handler_client(db: Dispatcher):
+    # dp.register_message_handler(unknown_message, content_types=['ANY'])
     dp.register_message_handler(command_start, commands=['start'])
     dp.register_message_handler(command_help, commands=['help'])
     dp.register_message_handler(yoda_mac, commands=['mac'])
@@ -270,5 +427,12 @@ def register_handler_client(db: Dispatcher):
     dp.register_message_handler(change_net_open, commands=['cli_open'])
     dp.register_message_handler(change_net_close, commands=['cli_close'])
     dp.register_message_handler(netinfo_in_sql_db, commands=['ni_db'])
+    dp.register_message_handler(coordinates_test, commands=['coord_t'])
+    dp.register_message_handler(coordinates_number_meters, commands=['coorddb_nums'])
+    dp.register_message_handler(coord_one_uspd_db_meter_user_out_file, commands=['coorddb_num_f'])
+    dp.register_message_handler(coord_one_uspd_db_meter_user_out_str, commands=['coorddb_num_s'])
+    dp.register_message_handler(coord_one_uspd_db_coord_user_out_str, commands=['coord_ll_s'])
+    dp.register_message_handler(coord_uspd_db_meter_yoda_out_str, commands=['coord_y_num_s'])
+    dp.register_message_handler(coord_uspd_db_meter_yoda_out_file, commands=['coord_y_num_f'])
 
 

@@ -1,4 +1,5 @@
-from variables import basic, header_mac, username, password, url_auth, url_search, header_mac_str_y, header_short_mac_str_y
+from variables import basic, header_mac, username, password, url_auth, url_search, url_search_meter,\
+    url_search_delivery, header_mac_str_y, header_short_mac_str_y
 import requests
 import json
 from excel import excel_func
@@ -9,6 +10,7 @@ import re
 basic_key = basic
 
 
+# механизм авторизации с записью в файл
 async def authorization_bas_key():
 
     headers = {'authorization': basic_key,
@@ -39,9 +41,108 @@ async def authorization_bas_key():
     return authorization
 
 
+# проверка ключа на валидность по времени
+async def valid_yoda_key():
+
+    authorization_var = ''
+    token_time_var = ''
+
+    # открыть файл с временнымыми переменными и получить bareer ключ
+    f = open('variables_temp.py', 'r')
+
+    i = 0
+    for line_var in f:
+        list_split_line = line_var
+        list_split_line = re.split(r"[',.\n]\s*", list_split_line)
+        if i == 0:
+            token_time_var = list_split_line[1]
+        if i == 1:
+            authorization_var = list_split_line[1]
+        i += 1
+
+    f.close()
+
+    now_time = datetime.now()
+    token_time = datetime.strptime(token_time_var, '%Y-%m-%d %H:%M:%S')
+
+    delta = now_time - token_time
+
+    seconds = delta.total_seconds()
+
+    if seconds > 43200:
+        authorization = await authorization_bas_key()
+    else:
+        authorization = authorization_var
+
+    return authorization
+
+
+# создание запроса и отправка запроса в йоду
+async def create_requests(list_meter, search, view, url_var):
+
+    authorization = await valid_yoda_key()
+
+    # формаирование json запроса
+    data_json = {"filter": {"conditions": [{"property": search, "value": list_meter, "operator": "in"}]},
+                 "view": view}
+
+    url = url_var  # url поиска из файла с переменными
+    headers = {'authorization': authorization,
+               'content-type': 'application/json'}
+
+    r = requests.post(url, headers=headers, json=data_json)  # запрос к апи йоды
+
+    if r.status_code != 200:
+        print(r)
+        authorization = await authorization_bas_key()
+        headers = {'authorization': authorization,
+                   'content-type': 'application/json'}
+        r = requests.post(url, headers=headers, json=data_json)  # запрос к апи йоды
+
+    text_requests = r.text
+    load_list = json.loads(text_requests)
+
+    return load_list
+
+
+# запрос координат в йоде DeliveryPoint
+async def requests_coord(list_meter):
+
+    search = 'number'
+    view = 'mobile-stolbi'
+
+    result_request_meter = await create_requests(list_meter, search, view, url_search_meter)
+
+    list_meter_id = []
+    for line_result_request_meter in result_request_meter:
+        id_meter = line_result_request_meter['id']
+        list_meter_id.append(id_meter)
+
+    search = 'meter'
+    view = 'edit'
+    result_request_delivery = await create_requests(list_meter_id, search, view, url_search_delivery)
+
+    number_meter = ''
+    list_meter_delivery = []
+    for line_result_request_delivery in result_request_delivery:
+        id_meter_delv = line_result_request_delivery['meter']['id']
+        latitude = line_result_request_delivery['latitude']
+        longitude = line_result_request_delivery['longitude']
+        for line_result_request_meter in result_request_meter:
+            if line_result_request_meter['id'] == id_meter_delv:
+                number_meter = line_result_request_meter['number']
+
+        list_temp_delv = [number_meter, latitude, longitude]
+        list_meter_delivery.append(list_temp_delv)
+
+    return list_meter_delivery
+
+
 async def id_meter_meter_type(list_meter, search, view):
 
     load_list = []
+    authorization_var = ''
+    token_time_var = ''
 
     # открыть файл с временнымыми переменными и получить bareer ключ
     f = open('variables_temp.py', 'r')
@@ -89,6 +190,13 @@ async def id_meter_meter_type(list_meter, search, view):
                        'content-type': 'application/json'}
             r = requests.post(url, headers=headers, json=data_json)  # запрос к апи йоды
 
+            if r.status_code != 200:
+                print(r)
+                authorization = await authorization_bas_key()
+                headers = {'authorization': authorization,
+                           'content-type': 'application/json'}
+                r = requests.post(url, headers=headers, json=data_json)  # запрос к апи йоды
+
             text_requests = r.text
             load_list_temp = json.loads(text_requests)
 
@@ -113,6 +221,13 @@ async def id_meter_meter_type(list_meter, search, view):
         headers = {'authorization': authorization,
                    'content-type': 'application/json'}
         r = requests.post(url, headers=headers, json=data_json)  # запрос к апи йоды
+
+        if r.status_code != 200:
+            print(r)
+            authorization = await authorization_bas_key()
+            headers = {'authorization': authorization,
+                       'content-type': 'application/json'}
+            r = requests.post(url, headers=headers, json=data_json)  # запрос к апи йоды
 
         text_requests = r.text
         load_list_temp = json.loads(text_requests)
@@ -202,6 +317,13 @@ async def id_meter_meter_type_src(list_meter, search, view):
     headers = {'authorization': authorization,
                'content-type': 'application/json'}
     r = requests.post(url, headers=headers, json=data_json)
+
+    if r.status_code != 200:
+        print(r)
+        authorization = await authorization_bas_key()
+        headers = {'authorization': authorization,
+                   'content-type': 'application/json'}
+        r = requests.post(url, headers=headers, json=data_json)  # запрос к апи йоды
 
     text_requests = r.text
     load_list = json.loads(text_requests)
@@ -294,7 +416,15 @@ async def id_meter_short_src(list_meter, search, view):
     headers = {'authorization': authorization,
                'content-type': 'application/json'}
     r = requests.post(url, headers=headers, json=data_json)
-    print(r)
+
+    if r.status_code != 200:
+        print(r)
+        authorization = await authorization_bas_key()
+        headers = {'authorization': authorization,
+                   'content-type': 'application/json'}
+        r = requests.post(url, headers=headers, json=data_json)  # запрос к апи йоды
+
+    # print(r)
     text_requests = r.text
     print(text_requests)
     load_list = json.loads(text_requests)
