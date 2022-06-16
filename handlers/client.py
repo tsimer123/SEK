@@ -432,6 +432,7 @@ def register_handler_client(db: Dispatcher):
     dp.register_message_handler(coord_one_uspd_db_meter_user_out_file, commands=['coorddb_num_f'])
     dp.register_message_handler(coord_one_uspd_db_meter_user_out_str, commands=['coorddb_num_s'])
     dp.register_message_handler(coord_one_uspd_db_coord_user_out_str, commands=['coord_ll_s'])
+    dp.register_message_handler(coord_one_uspd_db_coord_user_out_file, commands=['coord_ll_f'])
     dp.register_message_handler(coord_uspd_db_meter_yoda_out_str, commands=['coord_y_num_s'])
     dp.register_message_handler(coord_uspd_db_meter_yoda_out_file, commands=['coord_y_num_f'])
 
