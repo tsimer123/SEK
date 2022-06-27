@@ -120,7 +120,7 @@ def math_one_uspd_meter(type_mesg, meter_user, list_uspd):
             if list_one_meter != 0:
                 list_dist_temp.append(list_one_meter)
         if len(list_dist_temp) > 0:
-            list_dist_temp.sort(key=lambda x: x[6])
+            list_dist_temp.sort(key=lambda x: x[7])
         else:
             list_dist_temp.append([line_meter[0], '-', '-', line_meter[1], line_meter[2], '', '', '',
                                    'В радиусе 10 км нет опорного оборудования'])
@@ -183,7 +183,7 @@ def math_uspd_meter(meter_user, list_uspd):
             if list_one_meter != 0:
                 list_dist_temp.append(list_one_meter)
         if len(list_dist_temp) > 0:
-            list_dist_temp.sort(key=lambda x: x[6])
+            list_dist_temp.sort(key=lambda x: x[7])
         else:
             list_dist_temp.append([line_meter[0], '-', line_meter[1], line_meter[2], '', '', '',
                                    'В радиусе 10 км нет опорного оборудования'])
