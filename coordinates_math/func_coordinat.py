@@ -4,6 +4,7 @@ from variables import header_dist
 from yoda import yoda_func
 import asyncio
 import math
+import datetime
 
 
 # нужен был для тестов
@@ -106,6 +107,7 @@ def math_one_uspd_meter(type_mesg, meter_user, list_uspd):
     list_dist = []
 
     for line_meter in meter_user:
+        print(str(datetime.datetime.now()) + str(line_meter))
         list_dist_temp = []
         for line_uspd in list_uspd:
             list_one_meter = math_dist_one_meter(line_uspd, line_meter)
@@ -348,3 +350,15 @@ async def coord_uspd_db_coord_yoda_file(list_meters):
     else:
         list_error = ['В ЙОДЕ нет ни одного ПУ с таким(и) номером(ами) или координатами']
         return list_error
+
+
+# входные координаты через файл
+async def coord_uspd_db_file_coord_file(list_meters):
+
+    query_uspd = func_psql.query_list_uspd()
+    list_uspd = func_psql.sql_query_in_connect_db(query_uspd)
+
+    list_finish = math_one_uspd_meter('file', list_meters, list_uspd)
+
+    return excel_func.save_data_excel_in_wb(list_finish, 'dist', header_dist)
+

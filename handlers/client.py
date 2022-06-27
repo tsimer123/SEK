@@ -184,6 +184,9 @@ async def download_file(message):
         view = 'mobile-stolbi'  # _minimal, mobile-stolbi
         file_mane = await yoda_func.id_meter_meter_type(number_filter_in_func, search, view)
         await message.reply_document(open(file_mane, 'rb'))
+    elif name_file[0] == 'coord':
+        file_mane = await func_coordinat.coord_uspd_db_file_coord_file(number_filter)
+        await message.reply_document(open(file_mane, 'rb'))
     else:
         await message.reply('файл с некорректным названием')
 
