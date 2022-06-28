@@ -107,7 +107,7 @@ def math_one_uspd_meter(type_mesg, meter_user, list_uspd):
     list_dist = []
 
     for line_meter in meter_user:
-        print(str(datetime.datetime.now()) + str(line_meter))
+        # print(str(datetime.datetime.now()) + str(line_meter))
         list_dist_temp = []
         for line_uspd in list_uspd:
             list_one_meter = math_dist_one_meter(line_uspd, line_meter)
@@ -357,6 +357,10 @@ async def coord_uspd_db_file_coord_file(list_meters):
 
     query_uspd = func_psql.query_list_uspd()
     list_uspd = func_psql.sql_query_in_connect_db(query_uspd)
+
+    for line_list_meters in list_meters:
+        if len(line_list_meters) < 3:
+            return 'Формат файла не соответствует шаблону'
 
     list_finish = math_one_uspd_meter('file', list_meters, list_uspd)
 

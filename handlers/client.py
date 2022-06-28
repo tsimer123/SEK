@@ -24,7 +24,8 @@ async def command_start(message: types.Message):
 async def command_help(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
 
     list_help = []
     str_help = ''
@@ -39,7 +40,8 @@ async def command_help(message: types.Message):
 async def yoda_mac(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     number = message.text[5:]
     number = re.split(r"[-;,.\s]\s*", number)
     number_filter = list(filter(None, number))
@@ -52,7 +54,8 @@ async def yoda_mac(message: types.Message):
 async def yoda_mac_src(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     number = message.text[7:]
     number = re.split(r"[-;,.\s]\s*", number)
     number_filter = list(filter(None, number))
@@ -66,6 +69,7 @@ async def yoda_mac_src(message: types.Message):
 async def yoda_mac_short_src(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
+    tg_name = message.from_user.mention
     print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     number = message.text[6:]
     number = re.split(r"[-;,.\s]\s*", number)
@@ -80,7 +84,8 @@ async def yoda_mac_short_src(message: types.Message):
 async def yoda_num(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     number = message.text[5:]
     number = re.split(r"[-;,.\s]\s*", number)
     number_filter = list(filter(None, number))
@@ -93,7 +98,8 @@ async def yoda_num(message: types.Message):
 async def yoda_num_src(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     number = message.text[7:]
     number = re.split(r"[-;,.\s]\s*", number)
     number_filter = list(filter(None, number))
@@ -106,7 +112,8 @@ async def yoda_num_src(message: types.Message):
 async def yoda_num_short_src(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     number = message.text[6:]
     number = re.split(r"[-;,.\s]\s*", number)
     number_filter = list(filter(None, number))
@@ -125,7 +132,8 @@ async def document_send(message: types.Message):
 async def zabbix_ip(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     ip = message.text[3:]
     ip = re.split(r"[-;,\s]\s*", ip)
     ip_filter = list(filter(None, ip))
@@ -142,7 +150,8 @@ async def zabbix_ip(message: types.Message):
 async def zabbix_ip_src(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     ip = message.text[5:]
     ip = re.split(r"[-;,\s]\s*", ip)
     ip_filter = list(filter(None, ip))
@@ -159,12 +168,14 @@ async def zabbix_ip_src(message: types.Message):
 async def download_file(message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     id = message.document.file_id
     res = requests.get('https://api.telegram.org/bot{}/getFile?file_id={}'.format(TOKEN, id))
     b = json.loads(res.text)
     file_id = b['result']['file_path']
     name = message.document.file_name
+    print(name)
     now = datetime.datetime.now()
     now = str(now).replace(':', '_')
     dir_file = f'./file/input/{now}-{name}'
@@ -185,17 +196,21 @@ async def download_file(message):
         file_mane = await yoda_func.id_meter_meter_type(number_filter_in_func, search, view)
         await message.reply_document(open(file_mane, 'rb'))
     elif name_file[0] == 'coord':
-        file_mane = await func_coordinat.coord_uspd_db_file_coord_file(number_filter)
-        await message.reply_document(open(file_mane, 'rb'))
+        result = await func_coordinat.coord_uspd_db_file_coord_file(number_filter)
+        if not isinstance(result, str):
+            await message.reply_document(open(result, 'rb'))
+        else:
+            await message.reply(result)
     else:
-        await message.reply('файл с некорректным названием')
+        await message.reply('Файл с некорректным названием')
 
 
 async def change_net_open(message: types.Message):
 
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     status_change = []
     list_status_change = []
     ip = message.text[9:]
@@ -214,7 +229,8 @@ async def change_net_open(message: types.Message):
 async def change_net_close(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     status_change = []
     list_status_change = []
     ip = message.text[10:]
@@ -233,7 +249,8 @@ async def change_net_close(message: types.Message):
 async def netinfo_in_sql_db(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     list_netinfo = []
     # list_status_change = []
     ip = message.text[6:]
@@ -263,7 +280,8 @@ async def coordinates_test(message: types.Message):
     list_meter_values = []
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     meter_values = message.text[8:]
     meter_values = re.split(r"[-;,\s]\s*", meter_values)
     meter_values_filter = list(filter(None, meter_values))
@@ -278,7 +296,8 @@ async def coordinates_test(message: types.Message):
 async def coordinates_number_meters(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     meters = message.text[13:]
     meters = re.split(r"[;,\s]\s*", meters)
     meters_filter = list(filter(None, meters))
@@ -297,7 +316,8 @@ async def coordinates_number_meters(message: types.Message):
 async def coord_one_uspd_db_meter_user_out_file(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     meters = message.text[14:]
     meters = re.split(r"[;,\s]\s*", meters)
     meters_filter = list(filter(None, meters))
@@ -316,7 +336,8 @@ async def coord_one_uspd_db_meter_user_out_file(message: types.Message):
 async def coord_one_uspd_db_meter_user_out_str(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     meters = message.text[14:]
     meters = re.split(r"[;,\s]\s*", meters)
     meters_filter = list(filter(None, meters))
@@ -335,7 +356,8 @@ async def coord_one_uspd_db_meter_user_out_str(message: types.Message):
 async def coord_one_uspd_db_coord_user_out_str(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     coords = message.text[11:]
     coords = re.split(r"[;,\s]\s*", coords)
     coords_filter = list(filter(None, coords))
@@ -357,7 +379,8 @@ async def coord_one_uspd_db_coord_user_out_str(message: types.Message):
 async def coord_one_uspd_db_coord_user_out_file(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     coords = message.text[11:]
     coords = re.split(r"[;,\s]\s*", coords)
     coords_filter = list(filter(None, coords))
@@ -379,7 +402,8 @@ async def coord_one_uspd_db_coord_user_out_file(message: types.Message):
 async def coord_uspd_db_meter_yoda_out_str(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     meters = message.text[14:]
     meters = re.split(r"[;,\s]\s*", meters)
     meters_filter = list(filter(None, meters))
@@ -398,7 +422,8 @@ async def coord_uspd_db_meter_yoda_out_str(message: types.Message):
 async def coord_uspd_db_meter_yoda_out_file(message: types.Message):
     id_user = message.from_user.id
     full_name = message.from_user.full_name
-    print(str(datetime.datetime.now()) + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
+    tg_name = message.from_user.mention
+    print(str(datetime.datetime.now()) + ' ' + tg_name + ' ' + str(id_user) + ' ' + full_name + ' ' + str(message.text))
     meters = message.text[14:]
     meters = re.split(r"[;,\s]\s*", meters)
     meters_filter = list(filter(None, meters))
